@@ -1,6 +1,6 @@
 {
   "api": {
     "collectionTimeout": 30000,
-    "metricsEndpoint": "http://localhost:5000/api/metrics"
+    "metricsEndpoint": "https://api.wiseoldman.net/metrics"
   }
 }

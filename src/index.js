@@ -6,7 +6,7 @@ const config = require("./config");
 const app = express();
 const PORT = process.env.PORT || 3500;
 
-setInterval(() => APIExporter.collect(), config.collectionTimeout);
+setInterval(() => APIExporter.collect(), config.api.collectionTimeout);
 
 app.get("/", async (req, res) => {
   const { source } = req.query;
