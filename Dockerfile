@@ -1,4 +1,4 @@
-FROM node:12
+FROM node:14.16.0-alpine3.10
 
 WORKDIR /wise-old-man/metrics
 
