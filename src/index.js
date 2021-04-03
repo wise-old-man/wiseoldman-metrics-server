@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 3500;
 
 setInterval(() => APIExporter.collect(), config.api.collectionTimeout);
 
-app.get("/", async (req, res) => {
+app.get("/metrics", async (req, res) => {
   const { source } = req.query;
 
   if (!source) {
