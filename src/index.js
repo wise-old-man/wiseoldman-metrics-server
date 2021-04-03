@@ -9,12 +9,12 @@ const PORT = process.env.PORT || 3500;
 setInterval(() => APIExporter.collect(), config.api.collectionTimeout);
 
 app.get("/metrics", async (req, res) => {
-  const { source } = req.query;
+  //const { source } = req.query;
 
-  if (!source) {
-    res.status(404).json({ message: "Source not found." });
-    return;
-  }
+  //if (!source) {
+    //res.status(404).json({ message: "Source not found." });
+    //return;
+  //}
 
   const metrics = await APIExporter.getMetrics();
   res.end(metrics);
