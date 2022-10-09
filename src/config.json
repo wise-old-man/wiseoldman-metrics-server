@@ -2,5 +2,9 @@
   "api": {
     "collectionTimeout": 30000,
     "metricsEndpoint": "https://api.wiseoldman.net/metrics"
+  },
+  "api-v2": {
+    "collectionTimeout": 30000,
+    "metricsEndpoint": "https://api.wiseoldman.net/v2/metrics"
   }
 }
