@@ -1,10 +1,6 @@
 {
   "api": {
     "collectionTimeout": 30000,
-    "metricsEndpoint": "https://api.wiseoldman.net/v2/metrics"
-  },
-  "leagueApi": {
-    "collectionTimeout": 30000,
-    "metricsEndpoint": "https://api.wiseoldman.net/league/metrics"
+    "metricsEndpoint": "http://api:5000/metrics"
   }
 }
