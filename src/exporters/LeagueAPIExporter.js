@@ -1,6 +1,5 @@
 const axios = require("axios");
 const prometheus = require("prom-client");
-const config = require("../config.json");
 
 class LeagueAPIExporter {
   collector;
@@ -30,7 +29,7 @@ class LeagueAPIExporter {
 
     for (let i = 0; i < process.env.CPU_COUNT; i++) {
       axios
-        .get(config.leagueApi.metricsEndpoint)
+        .get("http://league-api:5001/metrics")
         .then((result) => {
           const { threadIndex, data } = result.data;
 
