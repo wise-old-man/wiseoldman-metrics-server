@@ -1,23 +1,66 @@
 require("dotenv").config();
 const express = require("express");
-const config = require("./config");
-const APIExporter = require("./exporters/APIExporter");
 const LeagueAPIExporter = require("./exporters/LeagueAPIExporter");
+const MetricSource = require("./MetricSource");
 
 const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 const PORT = process.env.PORT || 3500;
 
-setInterval(() => APIExporter.collect(), config.api.collectionTimeout);
-setInterval(() => LeagueAPIExporter.collect(), config.leagueApi.collectionTimeout);
+const apiSource = new MetricSource("API");
 
-app.get("/metrics/api", async (req, res) => {
-  const metrics = await APIExporter.getMetrics();
-  res.end(metrics);
+// Sources push their metrics to this route
+app.post("/metrics", async (req, res) => {
+  if (!req.body.source) {
+    return res.status(400).json({ message: "undefined source" });
+  }
+
+  if (!req.body.data) {
+    return res.status(400).json({ message: "undefined data payload" });
+  }
+
+  const threadIndex = req.body.threadIndex ?? 0;
+
+  switch (req.body.source) {
+    case "api":
+      apiSource.push(threadIndex, req.body.data);
+      break;
+    default: {
+      return res.status(400).json({ message: "invalid source" });
+    }
+  }
+
+  res.json({});
 });
+
+// Prometheus fetches metrics from this route
+app.get("/metrics", async (req, res) => {
+  if (!req.query.source) {
+    return res.status(400).json({ message: "undefined source" });
+  }
+
+  switch (req.query.source) {
+    case "api":
+      const apiMetrics = await apiSource.getMetrics();
+      res.end(apiMetrics);
+      break;
+    default: {
+      return res.status(400).json({ message: "invalid source" });
+    }
+  }
+});
+
+// ---- LEGACY, DELETE THESE ONCE THE LEAGUE API GOES OFFLINE!!!! ----
+
+setInterval(() => LeagueAPIExporter.collect(), 30000);
 
 app.get("/metrics/league-api", async (req, res) => {
   const metrics = await LeagueAPIExporter.getMetrics();
   res.end(metrics);
 });
+
+// --------------------------------------------------------------------
 
 app.listen(PORT, () => console.log(`Metrics Server - Running on port ${PORT}`));
