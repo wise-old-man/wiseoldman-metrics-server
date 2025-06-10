@@ -10,6 +10,7 @@ app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 const PORT = process.env.PORT || 3500;
 
 const apiSource = new MetricSource("API");
+const discordBotSource = new MetricSource("Discord Bot");
 
 // Sources push their metrics to this route
 app.post("/metrics", async (req, res) => {
@@ -26,6 +27,9 @@ app.post("/metrics", async (req, res) => {
   switch (req.body.source) {
     case "api":
       apiSource.push(threadIndex, req.body.data);
+      break;
+    case "discord-bot":
+      discordBotSource.push(threadIndex, req.body.data);
       break;
     default: {
       return res.status(400).json({ message: "invalid source" });
@@ -45,6 +49,10 @@ app.get("/metrics", async (req, res) => {
     case "api":
       const apiMetrics = await apiSource.getMetrics();
       res.end(apiMetrics);
+      break;
+    case "discord-bot":
+      const discordBotMetrics = await discordBotSource.getMetrics();
+      res.end(discordBotMetrics);
       break;
     default: {
       return res.status(400).json({ message: "invalid source" });
