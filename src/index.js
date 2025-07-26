@@ -1,6 +1,5 @@
 require("dotenv").config();
 const express = require("express");
-const LeagueAPIExporter = require("./exporters/LeagueAPIExporter");
 const MetricSource = require("./MetricSource");
 
 const app = express();
@@ -59,16 +58,5 @@ app.get("/metrics", async (req, res) => {
     }
   }
 });
-
-// ---- LEGACY, DELETE THESE ONCE THE LEAGUE API GOES OFFLINE!!!! ----
-
-setInterval(() => LeagueAPIExporter.collect(), 30000);
-
-app.get("/metrics/league-api", async (req, res) => {
-  const metrics = await LeagueAPIExporter.getMetrics();
-  res.end(metrics);
-});
-
-// --------------------------------------------------------------------
 
 app.listen(PORT, () => console.log(`Metrics Server - Running on port ${PORT}`));
