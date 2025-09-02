@@ -21,7 +21,7 @@ app.post("/metrics", async (req, res) => {
     return res.status(400).json({ message: "undefined data payload" });
   }
 
-  const threadIndex = req.body.threadIndex ?? 0;
+  const threadIndex = req.body.thread_index ?? 0;
 
   switch (req.body.source) {
     case "api":
@@ -46,11 +46,11 @@ app.get("/metrics", async (req, res) => {
 
   switch (req.query.source) {
     case "api":
-      const apiMetrics = await apiSource.getMetrics(req.query.threadIndex ?? 0);
+      const apiMetrics = await apiSource.getMetrics(req.query.thread_index ?? 0);
       res.end(apiMetrics);
       break;
     case "discord-bot":
-      const discordBotMetrics = await discordBotSource.getMetrics(req.query.threadIndex ?? 0);
+      const discordBotMetrics = await discordBotSource.getMetrics(req.query.thread_index ?? 0);
       res.end(discordBotMetrics);
       break;
     default: {
