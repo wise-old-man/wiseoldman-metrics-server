@@ -1,5 +1,3 @@
-const prometheus = require("prom-client");
-
 class MetricSource {
   name;
   collector;
@@ -12,24 +10,17 @@ class MetricSource {
   /**
    * Each thread would periodically push their metrics into this collector.
    */
-  push(threadIndex, metrics) {
+  push(threadIndex, plaintextMetrics) {
     this.collector[threadIndex] = {
       timestamp: Date.now(),
-      metrics,
+      plaintextMetrics,
     };
 
     console.log(this.name, "pushed", `(thread:${threadIndex})`);
   }
 
-  /**
-   * Aggregate the metrics collected from all pm2 threads.
-   */
-  async getMetrics() {
-    const dataSets = Object.values(this.collector).map((d) => d.metrics);
-    const registry = prometheus.AggregatorRegistry.aggregate(dataSets);
-    const metrics = await registry.metrics();
-
-    return metrics;
+  async getMetrics(threadIndex) {
+    return this.collector[threadIndex]?.plaintextMetrics ?? "";
   }
 }
 

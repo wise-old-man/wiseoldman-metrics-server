@@ -3,15 +3,15 @@ const express = require("express");
 const MetricSource = require("./MetricSource");
 
 const app = express();
-app.use(express.json({ limit: "50mb" }));
-app.use(express.urlencoded({ extended: true, limit: "50mb" }));
+app.use(express.json({ limit: "100mb" }));
+app.use(express.urlencoded({ extended: true, limit: "100mb" }));
 
 const PORT = process.env.PORT || 3500;
 
 const apiSource = new MetricSource("API");
 const discordBotSource = new MetricSource("Discord Bot");
 
-// Sources push their metrics to this route
+// Sources push their (plaintext) metrics to this route
 app.post("/metrics", async (req, res) => {
   if (!req.body.source) {
     return res.status(400).json({ message: "undefined source" });
@@ -21,7 +21,7 @@ app.post("/metrics", async (req, res) => {
     return res.status(400).json({ message: "undefined data payload" });
   }
 
-  const threadIndex = req.body.threadIndex ?? 0;
+  const threadIndex = req.body.thread_index ?? 0;
 
   switch (req.body.source) {
     case "api":
@@ -46,11 +46,11 @@ app.get("/metrics", async (req, res) => {
 
   switch (req.query.source) {
     case "api":
-      const apiMetrics = await apiSource.getMetrics();
+      const apiMetrics = await apiSource.getMetrics(req.query.thread_index ?? 0);
       res.end(apiMetrics);
       break;
     case "discord-bot":
-      const discordBotMetrics = await discordBotSource.getMetrics();
+      const discordBotMetrics = await discordBotSource.getMetrics(req.query.thread_index ?? 0);
       res.end(discordBotMetrics);
       break;
     default: {
