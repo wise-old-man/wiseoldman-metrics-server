@@ -13,6 +13,8 @@ const discordBotSource = new MetricSource("Discord Bot");
 
 // Sources push their (plaintext) metrics to this route
 app.post("/metrics", async (req, res) => {
+  console.log(`POST /metrics`, `(source=${req.body.source})`, `(thread_index=${req.body.thread_index})`);
+
   if (!req.body.source) {
     return res.status(400).json({ message: "undefined source" });
   }
@@ -40,6 +42,12 @@ app.post("/metrics", async (req, res) => {
 
 // Prometheus fetches metrics from this route
 app.get("/metrics", async (req, res) => {
+  console.log(
+    `GET /metrics`,
+    `(source=${req.query.source})`,
+    `(thread_index=${req.query.thread_index})`
+  );
+
   if (!req.query.source) {
     return res.status(400).json({ message: "undefined source" });
   }
