@@ -8,10 +8,6 @@ app.use(express.urlencoded({ extended: true, limit: "100mb" }));
 
 const PORT = process.env.PORT || 3500;
 
-/**
- * @deprecated Can be removed once all server sources have been split
- */
-const legacyApiSource = new MetricSource("API");
 const apiSource = new MetricSource("Server: API");
 const jobRunnerSource = new MetricSource("Server: Job Runner");
 const discordBotSource = new MetricSource("Discord Bot");
@@ -32,12 +28,9 @@ app.post("/metrics", async (req, res) => {
 
   switch (req.body.source) {
     case "api":
-      legacyApiSource.push(threadIndex, req.body.data);
-      break;
-    case "server-api":
       apiSource.push(threadIndex, req.body.data);
       break;
-    case "server-job-runner":
+    case "job-runner":
       jobRunnerSource.push(threadIndex, req.body.data);
       break;
     case "discord-bot":
@@ -65,14 +58,10 @@ app.get("/metrics", async (req, res) => {
 
   switch (req.query.source) {
     case "api":
-      const legacyApiMetrics = await legacyApiSource.getMetrics(req.query.thread_index ?? 0);
-      res.end(legacyApiMetrics);
-      break;
-    case "server-api":
       const apiMetrics = await apiSource.getMetrics(req.query.thread_index ?? 0);
       res.end(apiMetrics);
       break;
-    case "server-job-runner":
+    case "job-runner":
       const jobRunnerMetrics = await jobRunnerSource.getMetrics(req.query.thread_index ?? 0);
       res.end(jobRunnerMetrics);
       break;
