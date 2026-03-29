@@ -1,9 +1,9 @@
 class MetricSource {
-  name;
+  slug;
   collector;
 
-  constructor(name) {
-    this.name = name;
+  constructor(slug) {
+    this.slug = slug;
     this.collector = {};
   }
 
@@ -16,11 +16,7 @@ class MetricSource {
       plaintextMetrics
     };
 
-    console.log(this.name, "pushed", `(thread:${threadIndex})`);
-  }
-
-  async getMetrics(threadIndex) {
-    return this.collector[threadIndex]?.plaintextMetrics ?? "";
+    console.log(this.slug, "pushed", `(thread:${threadIndex})`);
   }
 
   async getAllMetrics() {
