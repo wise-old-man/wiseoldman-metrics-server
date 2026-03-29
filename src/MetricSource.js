@@ -13,7 +13,7 @@ class MetricSource {
   push(threadIndex, plaintextMetrics) {
     this.collector[threadIndex] = {
       timestamp: Date.now(),
-      plaintextMetrics,
+      plaintextMetrics
     };
 
     console.log(this.name, "pushed", `(thread:${threadIndex})`);
@@ -21,6 +21,12 @@ class MetricSource {
 
   async getMetrics(threadIndex) {
     return this.collector[threadIndex]?.plaintextMetrics ?? "";
+  }
+
+  async getAllMetrics() {
+    return Object.values(this.collector)
+      .map((entry) => entry.plaintextMetrics ?? "")
+      .join("\n\n");
   }
 }
 
